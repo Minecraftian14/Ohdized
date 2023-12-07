@@ -50,7 +50,7 @@ if __name__ == '__main__':
     m = Perceptron(2, 1)
     print([u.real() for u in m.forward(x)[0].squeeze()])
     l = []
-    for i in range(1000):
+    for i in range(2000):
         yp, cache = m.forward(x)
         l.append(m.loss(y, yp).real())
         _, grads = m.backward(-(y - yp), yp, cache)

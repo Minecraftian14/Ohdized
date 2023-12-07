@@ -86,14 +86,22 @@ class ZetaNumber:
         if isinstance(other, ZetaNumber):
             return self.vector_operation(other, lambda a, b: a * b)
         elif isinstance(other, Number):
-            return self.scalar_operation(other, lambda a, b: a * b)
+            if self.dtype(0) == other:
+                value = [self.value[u] for u in range(1, len(self.value))]
+                return ZetaNumber(dtype=self.dtype, _ig=True, *value)
+            else:
+                return self.scalar_operation(other, lambda a, b: a * b)
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __truediv__(self, other):
         if isinstance(other, Number):
-            return self.scalar_operation(other, lambda a, b: a / b)
+            if self.dtype(0) == other:
+                value = [0, ] + [u for u in self.value]
+                return ZetaNumber(dtype=self.dtype, _ig=True, *value)
+            else:
+                return self.scalar_operation(other, lambda a, b: a / b)
 
     def __rtruediv__(self, other):
         if isinstance(other, Number):
@@ -101,7 +109,10 @@ class ZetaNumber:
 
     def __pow__(self, power, modulo=None):
         if isinstance(power, Number):
-            return self.scalar_operation(power, lambda a, b: a.__pow__(power, modulo))
+            # return self.scalar_operation(power, lambda a, b: a.__pow__(power, modulo))
+            # TODO: Important! Implement proper PnC thing here
+            #  Stub impl to handle **2
+            return self.__mul__(self)
 
     def __repr__(self):
         return '+'.join([f'{x}z^{i}' for i, x in enumerate(self.value)])
