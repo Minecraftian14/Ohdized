@@ -27,3 +27,18 @@ print('x @ y =', x @ y)
 print('sum y', np.sum(y))
 # print('mean y', np.mean(y))
 print('mean y', np.sum(y) / len(y))
+
+print('y * 0=', y * 0)
+print('1 / (y * 0) =', 1 / (y * 0))
+
+u = ZetaNumber(1, 0, 3)
+print('u =', u)
+print('1 / u =', 1 / u)
+
+v = ZetaNumber(0, 0, 2, 3, 4, 5)
+print('v = ', v)
+print('v * v =', v * v)
+print('v^-1 =', v.multiplicative_inverse().intercept(4))
+print('v^-1^-1 =', v.multiplicative_inverse().multiplicative_inverse().intercept(6))
+
+print('', z(2, 3, 5, 7).dot(z(0, 1, 0, 1)))

@@ -4,7 +4,8 @@ from ohdized import ZetaNumber
 
 
 class ZetaNumpy:
-    intercept = np.vectorize(lambda x: x.intercept())
+    intercept = np.vectorize(lambda x, v=10: x.intercept(v))
+    upgrade = np.vectorize(lambda x: ZetaNumber(x))
 
     @staticmethod
     def asarray(x):
@@ -21,8 +22,8 @@ class ZetaNumpy:
         pass
 
     @staticmethod
-    def random1(dtype=None, decay=0.3):
-        activity = int(1 + np.log(np.random.random()) / np.log(decay))
+    def random1(dtype=None, decay=0.3, activity=None):
+        activity = activity if activity is not None else int(1 + np.log(np.random.random()) / np.log(decay))
         value = (np.random.random() for _ in range(activity))
         return ZetaNumber(dtype=dtype, _ig=True, *value)
 

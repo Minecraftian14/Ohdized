@@ -6,34 +6,17 @@ import matplotlib.pyplot as plt
 
 class Perceptron:
     def __init__(self, features, classes):
-        self.weights = znp.random((2 * features - 1, classes))
-        self.bias = znp.random((1, classes))
-
-    snap = np.vectorize(lambda x: x.unary_operation(lambda u: 1e2 if u > 1e2 else u))
-    real = np.vectorize(lambda x: x.real())
+        self.weights = np.random.random((features, classes))
+        self.bias = np.random.random((1, classes))
 
     def sigmoid(self, x):
-        # Similar to gradient clipping
-        x = Perceptron.snap(x)
-        x = Perceptron.snap(-x)
-
         exp = np.exp(x)
         return 1 / (1 + exp)
 
-    def transform(self, x):
-        # assert len(x.shape) == 2
-        return ZetaNumpy.asarray([ZetaNumber(*u) for u in x])[:, None]
-
     def forward(self, x):
-        z = self.transform(x)
-        a = z ** 2
-        g = a @ self.weights[0]
-        for w in self.weights[1:]:
-            a = a * 0
-            g += a @ w
-        g = g + self.bias
+        g = x @ self.weights + self.bias
         a = self.sigmoid(g)
-        return a, z
+        return a, x
 
     def loss(self, y, yp):
         return np.sum((y - yp) ** 2) / len(y)
@@ -48,8 +31,8 @@ class Perceptron:
 
     def update(self, grads, alpha):
         dw, db = grads
-        self.weights -= alpha * dw
-        self.bias -= alpha * db
+        self.weights += alpha * dw
+        self.bias += alpha * db
 
 
 if __name__ == '__main__':
@@ -68,17 +51,18 @@ if __name__ == '__main__':
         [0],
     ], dtype=np.float64)
 
-    m = Perceptron(2, 1)
+    z = np.asarray([x[:, 0], x[:, 1], x[:, 0] * x[:, 1]]).T
+    print(z)
+    x=z
 
-    print([u.real() for u in m.forward(x)[0].squeeze()])
+    m = Perceptron(3, 1)
+    print([u for u in m.forward(x)[0].squeeze()])
     l = []
     for i in range(2000):
         yp, cache = m.forward(x)
-        l.append(m.loss(y, yp).real())
+        l.append(m.loss(y, yp))
         _, grads = m.backward(-(y - yp), yp, cache)
-        m.update(grads, 0.01)
-        m.weights = ZetaNumpy.intercept(m.weights)
-        m.bias = ZetaNumpy.intercept(m.bias)
+        m.update(grads, 0.1)
     plt.plot(l)
     plt.show()
-    print([u.real() for u in m.forward(x)[0].squeeze()])
+    print([u for u in m.forward(x)[0].squeeze()])
